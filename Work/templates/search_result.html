@@ -1,0 +1,229 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      {% if current_user.is_authenticated %}
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      {% else %}
+      <a class="navbar-brand" href="{{ url_for( 'Main.index' ) }}">NextFarm</a>
+      {% endif %}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if current_user.is_authenticated %}
+            {% if current_user.user_type == 1 %}
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href=" {{ url_for('Restuarant.restuarant_profile', username=current_user.username) }} ">Profile</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" aria-current="page" href=" {{ url_for('Product.checkout') }} ">Cart</a>
+                </li>
+            {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Log in
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_login') }}">Farmer</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_login') }}">Resturant</a></li>
+            </ul>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Sign Up
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_register') }}">Farmer</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_registration') }}">Resturant</a></li>
+            </ul>
+        </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block header_links %}
+
+{% endblock %}
+
+
+{% block header %}
+
+{% endblock %}
+
+{% block body %}
+
+
+<!-- Advanced Search section -->
+<div>
+  <fieldset  class="border p-2 form-group">
+  <form action="" method="POST" enctype="multipart/form-data" class="row g-3">
+      {{ form.hidden_tag() }}
+
+      
+      <div class="col-md-6">
+          {{ form.product_name.label(class="form-label") }}
+          {{ form.product_name(class="form-control") }}
+      
+          {% if form.product_name.errors %}
+              {% for error in form.product_name.errors %}
+                  <span> {{ error }} </span> <br>
+              {% endfor %}
+          {% endif %}
+      </div>
+
+      <div class="col-md-6">
+        {{ form.delivery.label(class="form-label") }}
+        {{ form.delivery(class="form-select") }}
+    
+        {% if form.delivery.errors %}
+            {% for error in form.delivery.errors %}
+                <span> {{ error }} </span> <br>
+            {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="col-md-4">
+          {{ form.min_price.label(class="form-label") }}
+          {{ form.min_price(class="form-control") }}
+      
+          {% if form.min_price.errors %}
+              {% for error in form.min_price.errors %}
+                  <span> {{ error }} </span> <br>
+              {% endfor %}
+          {% endif %}
+      </div>
+      <div class="col-md-4">
+          {{ form.max_price.label(class="form-label") }}
+          {{ form.max_price(class="form-control") }}
+
+          {% if form.max_price.errors %}
+              {% for error in form.max_price.errors %}
+                  <span> {{ error }} </span> <br>
+              {% endfor %}
+          {% endif %}
+      </div>
+
+      <div class="col-md-4">
+          {{ form.min_stock.label(class="form-label") }}
+          {{ form.min_stock(class="form-control") }}
+
+          {% if form.min_stock.errors %}
+              {% for error in form.min_stock.errors %}
+                  <span> {{ error }} </span> <br>
+              {% endfor %}
+          {% endif %}
+      </div>
+
+      <div class="col-4">
+        {{ form.submit(class="btn btn-outline-primary") }}
+      </div>      
+
+  </form>
+      
+  </fieldset>
+</div>
+
+<!-- End of Advanced Search section -->
+
+<div>
+  {% if products.items %}
+    {% for product in products.items|batch(4) %}
+        <div class="row">
+          {% for col in product%}
+
+            <div class="col-md-3 farmers-list">
+
+              <div class="card border-0 transform-on-hover bg-light">
+                <a href=" {{ url_for('Product.product_info',  product_id=col.id) }} ">
+                  {% if col.images[0] %}
+                    <img src="{{ url_for('static', filename='product_images/' + col.images[0].name) }}" alt="{{ col.farmer.first_name }}" style="width:100%">
+                  {% else %}
+                  <img src="{{ url_for('static', filename='product_images/noimage.png') }}" alt="{{ col.farmer.first_name }}" style="width:100%">
+                  {% endif %}
+                  </a>
+                <h3> <a href=" {{ url_for('Product.product_info', product_id=col.id) }} "> {{ col.product_name }} </a>  </h3>
+  
+                <p style="margin:0;"  class="price"> {{ "R%.2f"|format( col.price|int ) }} </p>
+                <p style="margin:0;"  class="price"> Available stock {{ col.stock_count|int }}</p>
+                <!-- Check if farmer offers free delivery  -->
+                {% if col.offer_delivery %}
+                <p style="margin:0;"  class="price"> Free Delivery </p>
+                {% else %}
+                <p style="margin:0;"  class="price"> No Delivery </p>
+                {% endif %}
+                <small style="color: rgba(90, 87, 87, 0.589);">
+                  seller<a href="{{ url_for('Farmer.farmer_profile', username=col.farmer.username) }}"> {{ col.farmer.first_name }} {{ col.farmer.last_name }}, </a>
+                  {{ col.farmer.address[0].province }}
+                </small>
+                {% if current_user.is_authenticated and current_user.user_type == 1%}
+                  {% if current_user.exist_in_cart(col.id) %}
+                    <a class="btn btn-outline-danger" href="{{ url_for('Farmer.delete_from_cart', product_id = col.id, prev_page='search') }}"> 
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>Remove from Cart </a>
+                  {% else %}
+                    <a class="btn btn-outline-success" href="{{ url_for('Farmer.add_to_cart', product_id = col.id, prev_page='search') }}"> 
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>
+                      Add to Cart
+                    </a>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+    {% endfor %}
+  {% else %}
+        <br>
+        <br>
+        <p> No results found </p>
+  {% endif %}
+</div>
+
+<br>
+
+  <!-- start pagination -->
+  <div>
+    <nav aria-label="...">
+      <ul class="pagination pagination-sm">
+        {% for page in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+          {% if page %}
+            {% if products.page == page %}
+            <li class="page-item active" aria-current="page"> <span class="page-link">{{ page }} </span> </li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="{{ url_for('Main.home', page=page) }}">{{ page }}</a></li>
+            {% endif %}
+          {% else %}
+            ...
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+  <!-- end pagination -->
+
+{% endblock body %}
+
+
+

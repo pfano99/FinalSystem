@@ -1,0 +1,12 @@
+# all python created folders
+**__pycache__/
+
+# ignore the workspace folder created by vscode
+Work/workspace.code-workspace
+
+# ignore the virtual enviroment folder
+*env
+
+# ignore 
+Work/static/profile_pictures/
+Work/static/product_images/

@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+
+{% block header_links %}
+
+<style>
+  img{
+    width: 140px;
+    height: 52px;
+  }
+  button{
+    height:52px;
+  }
+  
+  #suc-btn{
+    background-color: green;
+    border-radius: 10px;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
+    width: 58%;
+  }
+  #suc-btn:hover{
+    background-color: rgb(100, 207, 68);
+    font-size: 24px;
+    border-radius: 15px;
+    color: #ffffff;
+  }
+  
+
+</style>
+
+{%  endblock %}
+
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href=" {{ url_for('Product.checkout') }} ">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+  <div class="row">
+    <!-- Set up a container element for the button -->
+    <!-- <div class="col-md-6"> -->
+      <div id="paypal-button-container"></div>
+    <!-- </div> -->
+    
+    <a style="display: none;" id="suc-btn"  href="{{ url_for('Product.make_order') }}">Payment successful, Continue with your Order</a>
+
+    {% if free_order %}
+      <!-- free orders sections -->
+      <div class="col-md-6">
+        <p>Your credit amount is greater than the total cost of your order. Now you can order for free using your credit amount. </p>
+        <a href="{{ url_for('Product.make_order') }}" class="btn btn-outline-success">
+          Order now
+        </a>
+      </div>
+    {% else %}
+      <!-- Yoco payments section -->
+      <div class="col-md-6">
+        <div class="row">
+          <img class="col-md-4" src="https://developer.yoco.com/img/design-resources/yoco_colour.svg">
+          <img class="col-md-4" src="https://developer.yoco.com/img/design-resources/visa_colour.svg">
+          <img class="col-md-4" src="https://developer.yoco.com/img/design-resources/mastercard_colour.svg">
+        </div>
+        <br>
+        <div class="row">
+          <button class="btn btn-outline-success" id="checkout-button">Pay with YOCO</button>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <br>
+  <!-- Include the PayPal JavaScript SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AVyj7-hkfoucI8Yjx1rLSwtOI0R_FOZmW_5Ll5fbXKtQswEt7K4M0SzhcR-l1fQZr3DlDhUlGUYmGSlw&currency=USD"></script>
+  <!-- Include the Yoco SDK in your web page -->
+  <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
+
+
+    <!-- <script>
+        // Render the PayPal button into #paypal-button-container
+        var total = "{{ paypal_total }}";
+        console.log(total)
+        paypal.Buttons({
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: total
+                        }
+                    }]
+                });
+            },
+
+            // Finalize the transaction
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(orderData) {
+                    // Successful capture! For demo purposes:
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    var transaction = orderData.purchase_units[0].payments.captures[0];
+                    var x = document.getElementById("suc-btn");
+                    x.style.display = "block";
+                    // windows.location.href = "https://127.0.0.1:5000//payments/make-order";
+
+                    // actions.redirect('thank_you.html');
+
+                    // alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+                    // Replace the above to show a success message within this page, e.g.
+                    // const element = document.getElementById('paypal-button-container');
+                    // element.innerHTML = '';
+                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    // Or go to another URL:  actions.redirect('thank_you.html');
+                });
+            }
+        }).render('#paypal-button-container');
+    </script> -->
+
+    <script>
+
+      function send_token(token, price){
+          data = {
+            'token':token,
+            'price':price
+          }
+          var url = 'http://127.0.0.1:5000//handle-yoco-payment/';
+          fetch(url, {
+            method: 'POST',
+            headers: {
+              'content-type':'application/json'
+            },
+            body:JSON.stringify(data)
+          })
+          .then(function(response){
+            if (response.status === 200){
+              window.location.replace("http://127.0.0.1:5000//payments/make-order");
+            }
+            else if(response.status === 400){
+            window.location.replace("http://127.0.0.1:5000//payment/methods");
+            }else{
+            window.location.replace("http://127.0.0.1:5000//payment/methods");
+            }
+        })
+      }
+        var price = parseInt("{{ yoco_total }}");
+        var yoco = new window.YocoSDK({
+          publicKey: 'pk_test_72913b53BGy8XYKed5c4',
+        });
+        var checkoutButton = document.querySelector('#checkout-button');
+        checkoutButton.addEventListener('click', function () {
+          yoco.showPopup({
+            amountInCents: price,
+            currency: 'ZAR',
+            name: 'NextFarm.shop',
+            description: 'Awesome description',
+            callback: function (result) {
+              // This function returns a token that your server can use to capture a payment
+              if (result.error) {
+                const errorMessage = result.error.message;
+                alert("error occured: " + errorMessage);
+              } else {
+                send_token(result.id, price);
+              }
+              // In a real integration - you would now pass this chargeToken back to your
+              // server along with the order/basket that the customer has purchased.
+            }
+          })
+        });
+    </script>
+
+{% endblock body %}
+

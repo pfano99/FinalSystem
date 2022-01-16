@@ -1,0 +1,156 @@
+{% extends 'layout.html' %}
+
+
+{% block header_links %}
+   <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chat.css') }}"> -->
+
+   <style>
+.cont-box {
+  border: 2px solid #000000;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+/* Darker chat container */
+.darker {
+  border-color: rgb(0, 0, 0);
+  background-color: rgb(209, 209, 209);
+}
+
+/* Clear floats */
+.cont-box::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Style images */
+.cont-box img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+/* Style the right image */
+.cont-box img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+/* Style time text */
+.time-right {
+  float: right;
+  color: rgb(216, 216, 216);
+}
+
+/* Style time text */
+.time-left {
+  float: left;
+  color: #999;
+}
+   </style>
+
+
+{% endblock header_links %}
+
+
+
+{% block navigation %}
+<!-- Navigation section -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            {% if current_user.user_type == 0 %}
+              <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+            {% else %}
+              <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            {% endif %}
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="" method='POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+<!-- end of navigation section -->
+
+{% endblock navigation %}
+
+
+{% block body %}
+
+{% for message in messages %}
+  {% if message.sender_type == 0 %}
+    <div class="cont-box darker">
+      <a href="{{ url_for('Farmer.farmer_profile', username=message.farmer.username) }}"><img src="{{ url_for('static', filename='profile_pictures/' + message.farmer.profile_picture) }}" alt="Avatar"></a>
+      <p>{{ message.body }}</p>
+    </div>
+  {% else %}
+
+  <div class="cont-box">
+        <!-- recipient is a restuarant -->
+        {% if  message.restuarant.profile_picture %}
+        <!-- check if the restuarant has a profile -->
+        <a href="{{ url_for('Restuarant.restuarant_profile', username=message.restuarant.username) }}"><img src="{{ url_for('static', filename='profile_pictures/' + message.restuarant.profile_picture) }}" alt="Avatar" class="right"></a>
+        {% else %}
+          <!-- use default picture if resturant don't have one -->
+          <a href="{{ url_for('Restuarant.restuarant_profile', username=message.restuarant.username) }}"><img src="{{ url_for('static', filename='profile_pictures/default.jpeg') }}" alt="Avatar" class="right"></a>
+        {% endif %}
+    <p>{{ message.body }}</p>
+  </div>
+
+  {% endif %}
+{% endfor %}
+
+  <form class="row" action="" method="POST">
+
+     {{ form.hidden_tag() }}
+     <div class="col-md-11">
+       {{ form.message(class="form-control") }}
+     </div>
+     <div class="col-md-1">
+       {{ form.submit(class="btn btn-outline-success") }}
+       <br>
+      <br>
+     </div>
+ </form>
+</div>
+
+
+
+
+
+{% endblock body %}
+
+
+{% block scripts %}
+
+<script>
+  
+</script>
+
+
+{% endblock scripts %}
+
+

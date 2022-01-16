@@ -1,0 +1,186 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block header_links %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/footer-sec.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index-page.css') }}">
+{% endblock %}
+
+
+{% block navigation %}
+
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light top-fixed-pos">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for( 'Main.index' ) }}">NextFarm</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">  
+            
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Log in
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_login') }}">Farmer</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_login') }}">Resturant</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Sign Up
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_register') }}">Farmer</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_registration') }}">Resturant</a></li>
+                </ul>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block header %}
+
+    <div class="jumbotron jumbotron-fluid">
+        <h1 style="margin-top: 60px; color: #ffff; text-shadow: 1px 1px #030303; font-weight: bold;">
+            Welcome to nextfarm
+        </h1>
+        <h4 style="color: #ffff; font-weight: bold;"> a place where farmers sell their fresh products and restuarants buys.</h4>
+        <h3 style="color: #ffff; font-weight: medium;"> start selling/buying today.</h3>
+          <form class="example" action="/simple/search" method="POST">
+            <input type="text" placeholder="Search any product..." name="query">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+        
+    </div>
+    <h2 style="margin-top: 20px; margin-bottom: 20px; text-align: center;">SOME TYPES OF PRODUCTS TO SELL/BUY.</h2>
+    <div class="row">
+        <div class="col-md-3">
+            <img src="{{ url_for('static', filename='background_img/redspinach.png') }}" height="300px">
+        </div>
+        <div class="col-md-3">
+            <img src="https://www.edisoninst.com/wp-content/uploads/2019/06/can-eating-raw-nuts-help-you-lose-belly-fat-2.jpg" height="300px">
+        </div>
+        <div class="col-md-3">
+            <img src="https://media.pasreform.com/uploads/cache/header/Incubating-big-eggs-pays-off.jpg" height="300px">
+        </div>
+        <div class="col-md-3">
+            <img src="https://previews.123rf.com/images/natalyaa/natalyaa1501/natalyaa150100202/35262287-raw-fresh-meat.jpg" height="300px">
+        </div>
+
+    </div>
+
+{% endblock header %}
+
+
+{% block body %}
+
+    <div class="clr"></div>
+
+    <div class="our-services">
+        <h2> Who is Our Customers? </h2>
+        <div class="row">
+            <div class="col-md-8 serv-section1">
+                <p>
+                    All farmers who own small or larger farms who can a supply any product, it can be fruits, vegetables,  
+                    at a large amount.The farmer do not need to have years experience as long as they can deliver 
+                    fresh quality products, is this the place for them.  
+                </p>
+            </div>
+            <div class="col-md-4 serv-section2">
+                <ul>
+                    <li> <pre>Restuarant</pre></li>
+                    <li> <pre>Fresh produce markets</pre></li>
+                    <li> <pre>Chain stores</pre></li> 
+                    <li> <pre>Greengrocers</pre></li>
+                    <li> <pre>Catering companies</pre></li>
+                    <li> <pre>Hawkers</pre></li>
+                    <li> <pre>School feeding schemes</pre></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="https://www.afgri.co.za/wp-content/uploads/sites/4/2020/09/DSC_0108-1030x688.jpg" height="300px">
+            <br><h5>Marginal Farmers</h5>
+        </div>
+        <div class="col-md-4">
+            <img src="https://www.agriculture.com.ph/wp-content/uploads/2020/05/Masaganang-Ani-1536x1024-1-759x500.jpg" height="300px">
+            <br><h5>Small Farmers</h5>
+        </div>
+        <div class="col-md-4">
+            <img src="https://st2.depositphotos.com/2321719/i/600/depositphotos_118793336-stock-photo-grocery-clerk-working-in-produce.jpg" width="410" height="300px">
+            <br><h5>Store Owners</h5>
+        </div>
+    </div>
+
+    <!-- <div class="tempo-state"></div> -->
+
+    <div class="our-services">
+        <h2> Our Vision </h2>
+        <div class="row">
+            <div class="vision-sec">
+                <p>
+                   Nextfarm is a plartform were farmers meets restuarants. We make it easy for restuarants to get their ingredients 
+                   and farmers to sell their product by being the middleman.
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <img style="display: block; margin-left: auto; margin-right: auto;" height="300px" src="https://images.unsplash.com/photo-1542838132-92c53300491e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80" alt="">
+            </div>
+            <div class="col-md-6">
+                <img style="display: block; margin-left: auto; margin-right: auto;" height="300px" src="https://cdn.theatlantic.com/thumbor/nE7NcDi0z2CXg30rC45HmJd6Jy4=/0x52:1000x614/976x549/media/img/mt/2014/12/shutterstock_234903799/original.jpg" alt="">
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
+
+
+{% block footer %}
+
+<div class="serv-info">
+    
+    <div class="row">
+
+        <div class="col-md-4">
+            <h3> Address </h3>
+            <ul class="social-icons">
+                <li>2 Aubrey Matlakala st.</li> <br>
+                <li>Soshanguve, pretoria</li> <br>
+                <li>0001</li> <br>
+            </ul>
+        </div>
+
+        <div class="col-md-4">
+            <h3> Follow Us On</h3> 
+            <ul class="social-icons">
+                <li><img src="{{ url_for('static', filename='icons/facebook.svg') }}" height="30px"> </li>
+                <li><img src="{{ url_for('static', filename='icons/twitter.svg') }}"  height="30px">  </li>
+                <li><img src="{{ url_for('static', filename='icons/linkedin.svg') }}" height="30px"> </li>
+                <li><img src="{{ url_for('static', filename='icons/instagram.svg') }}" height="30px"></li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <h3> Contact Us</h3>
+            <p> <img src="{{ url_for('static', filename='icons/envelope-open.svg') }}">  NEXTFARM@GMAIL.COM </p>
+            <p> <img src="{{ url_for('static', filename='icons/telephone-fill.svg') }}">  067-260-3656 </p> 
+        </div>
+    </div>
+</div>
+
+{% endblock footer %}

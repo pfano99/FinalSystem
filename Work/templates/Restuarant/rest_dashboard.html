@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if current_user.user_type == 0 %}
+            <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href=" {{ url_for('Product.checkout') }} ">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Restuarant.favorites') }}">Favorites</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Restuarant.restuarant_orders') }}">DashBoard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+<div>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+
+        <div class='row'>
+            <div class="col-sm-2">
+                {{ form.from_date.label }}
+            </div>
+            <div class="col-sm-2">
+                {{ form.to_date.label }}
+            </div>
+            <div class="col-sm-2">
+                {{ form.min_price.label }}
+            </div>
+            <div class="col-sm-2">
+                {{ form.max_price.label }}
+            </div>
+        </div>
+        
+        <div class='row'>
+            <div class="col-sm-auto">
+                {{ form.from_date(class="form-control") }}
+    
+                {% if form.from_date.errors %}
+                    {% for error in form.from_date.errors %}
+                        <span style="color: red;" >{{error}}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-sm-auto">
+                {{ form.to_date(class="form-control") }}
+    
+                {% if form.to_date.errors %}
+                    {% for error in form.to_date.errors %}
+                        <span style="color: red;" >{{error}}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-sm-2">
+                {{ form.min_price(class="form-control") }}
+    
+                {% if form.min_price.errors %}
+                    {% for error in form.min_price.errors %}
+                        <span style="color: red;" >{{error}}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-sm-2">
+                {{ form.max_price(class="form-control") }}
+    
+                {% if form.max_price.errors %}
+                    {% for error in form.max_price.errors %}
+                        <span style="color: red;" > {{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-sm-auto">
+                {{ form.submit(class="btn btn-outline-success") }}
+            </div>    
+        </div>
+    </form>
+</div>
+
+<br>
+<div>
+    <h3>Orders</h3>
+    
+    <table class="table table-striped table-hover" >
+        <thead>
+            <tr>
+                <th scope="col">Date Ordered</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Products Ordered</th>
+                <th scope="col">More info</th>
+                <!-- <th scope="col">Status</th>   -->
+            </tr>
+        </thead>
+        <tbody>
+        {% if orders %}
+            {% for order in orders %}
+                <tr>
+                    <td scope="row"> {{ order.date_ordered.strftime("%b-%d-%Y") }} </td>
+                    <td> R {{ order.total_cost }} </td>
+                    <td> {{ order.order_details|list|count }} </td>
+                    <td> <a href="{{ url_for('Product.order_info', order_id=order.id) }}">Info</a> </td>
+                </tr>
+            {% endfor %}  
+        {% else %}
+            {% for order in filtered_orders %}
+                <tr>
+                    <td scope="row"> {{ order[0].strftime("%b-%d-%Y") }} </td>
+                    <td> R {{ order[1] }} </td>
+                    <td> {{ order[2] }} </td>
+                    <td> <a href="{{ url_for('Product.order_info', order_id=order[3]) }}">Info</a> </td>
+                </tr>
+            {% endfor %} 
+        {% endif %}     
+
+        </tbody>
+    </table>
+</div> 
+
+
+{% endblock body %}
+
+
+
+

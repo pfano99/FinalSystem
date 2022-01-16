@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom_main.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    
+    {% block header_links %}
+    {% endblock %}
+    <style>
+        .top_spacing{
+            height: 10px;
+        }
+    </style>
+    
+
+    <title> {% block title %} {% endblock %} </title>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{category}}" role="alert">
+                    {{ message }}
+                </div>   
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block navigation %} 
+    {% endblock %}
+
+    
+
+
+    <header>
+        {% block header %}
+        {% endblock %}
+    </header>
+    <div class="top_spacing">
+
+    </div>
+    <div class='container bg-light'>
+        {% block body %} {% endblock %}
+    </div>
+    
+    <footer>
+        {% block footer %}
+        {% endblock %}
+    </footer>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}" >  </script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>

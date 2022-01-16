@@ -1,0 +1,283 @@
+
+
+
+/* index section */
+.jumbotron {
+	background-image: url( "../background_img/farm9.jpg" );
+	background-size:cover;
+	/* background-position:0vmax; */
+	color: #000000;
+	font-size: x-large;
+	text-align: center;
+    height: 500px;
+}
+
+
+/* Index Section */
+.our-services{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+	text-transform: uppercase;
+}
+
+.our-services h2{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.serv-section2 li{
+    display: inline;
+    list-style: none;
+}
+
+.serv-section2 pre{
+    font-size: medium;
+	margin: 0px;
+}
+
+.serv-section1{
+	/* background-color:#2a8f2a ; */
+	color: #160a0a;
+	padding:10px;
+	text-transform: uppercase;
+	text-align: center;
+	border: 1px #000000 solid;
+	border-radius: 15px;
+	box-shadow: 0px 2px #617268;
+	
+}
+.vision-sec{
+	color: #160a0a;
+	padding:10px;
+	text-transform: uppercase;
+	text-align: center;
+	border: 1px #87db7c solid;
+	border-radius: 20px;
+	box-shadow: 5px 5px 5px #313131;
+	/* border: #10df1b;
+	border-width: medium; */
+}
+
+.serv-section2:hover{
+	background-color:#000000 ;
+	color: #fff;
+	padding:10px;
+	text-transform: uppercase;
+	text-align: center;
+	border-right: 1px #000000 solid;
+}
+
+.serv-section1:hover{
+	background-color:#000000 ;
+	color: #fff;
+	padding:10px;
+	text-transform: uppercase;
+	text-align: center;
+	border-right: none;
+	font-size: medium;
+	
+}
+
+.serv-section2{
+	/* background-color:#2a8f2a ; */
+	color: #0e0909;
+	padding:10px;
+	text-transform: uppercase;
+	text-align: center;
+	border: 1px #000000 solid;
+	border-radius: 15px;
+	box-shadow: 0px 2px #160a0a;
+	
+}
+.serv-section2 li{
+	list-style: none;
+}
+
+
+
+/* Index Section */
+.services-offered{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+
+
+
+
+.serv-block3{
+	background-color:#2a8f2a ;
+	color: #ffffff;
+	padding:5px;
+	text-transform: uppercase;
+	text-align: center;
+	
+}
+
+
+/* Index Section */
+.main-button {
+	color: #000000;
+	background-color: #1daba6;
+	border: none;
+	padding: 15px 30px;
+	margin: 20px;
+
+}
+
+.regular-button{
+
+	color: #000000;
+	background-color: #20790eb6;
+	border: none;
+	padding: 15px 30px;
+	margin: 20px;
+	border-radius: 10px;
+}
+
+.regular-button:hover{
+	font-weight: bolder;
+	color:  #20790eb6;
+	background-color: transparent;
+	border: 1px  #20790eb6 solid;
+	padding: 15px 30px;
+	margin: 20px;
+}
+
+
+.main-button:hover {
+	color: #2be76a;
+	background-color: transparent;
+	border: 1.5px #61eb11 solid;
+	border-radius: 0.4em;
+	padding: 15px 30px;
+
+}
+
+
+/* Index Section */
+
+.popular-jobs {
+	text-align: center;
+	margin-top:10px;
+	margin-bottom:10px;
+	text-transform: uppercase;
+    /* background-color: #a8dadc; */
+}
+
+.popular-blocks {
+	/* background: rgb(247, 106, 81); */
+    color: #ffffff;
+	padding:2%;
+	/* border: 1px #000 solid; */
+	/* border-radius: 5px; */
+	margin-left: 4%;
+	margin-right: 4%;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+
+/* .popular-blocks:hover {
+	background: rgb(139, 134, 133);
+	color: #ffffff;
+} */
+
+.p-block1{
+    background-image: url('../background_img/farm1.jpg');
+	height: 220px;
+	width: 400px;
+	margin-right: 5px;
+	margin-left: 0px;
+}
+
+.p-block2{
+    background-image: url('../background_img/farm2.jpg');
+	background-position: center;
+	height: 220px;
+	width: 400px;
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
+.p-block3{
+    background-image: url('../background_img/farm7.jpg');
+	height: 220px;
+	width: 400px;
+	margin-right: 0px;
+	margin-left: 5px;
+}
+
+
+.tempo-state{
+	height : 500px;
+}
+
+
+.social-icons li{
+    display: inline;
+    list-style: none;
+    margin:5px;
+}
+
+/* * {
+	box-sizing: border-box;
+  } */
+  
+  /* Style the search field */
+  form.example input[type=text] {
+	padding: 10px;
+	margin-left: 35%;
+	margin-top: 90px;
+	font-size: 17px;
+	border: 1px solid grey;
+	float: left;
+	width: 30%;
+	background: #f1f1f1;
+	border-radius: 15px 0px 0px 15px;
+  }
+  
+  /* Style the submit button */
+  form.example button {
+	float: left;
+	width: 5%;
+	padding: 10px;
+	margin-top: 90px;
+	background: #10df1b;
+	color: white;
+	font-size: 17px;
+	border: 1px solid grey;
+	border-left: none; /* Prevent double borders */
+	cursor: pointer;
+
+	border-radius: 0px 15px 15px 0px;
+  }
+  
+  form.example button:hover {
+	background: #0b7dda;
+  }
+  
+  /* Clear floats */
+  form.example::after {
+	content: "";
+	clear: both;
+	display: table;
+  }
+  
+  #overlay {
+	position: fixed; /* Sit on top of the page content */
+	/* display: none; Hidden by default */
+	width: 100%; /* Full width (cover the whole page) */
+	height: 100%; /* Full height (cover the whole page) */
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+	z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+	/* cursor: pointer; Add a pointer on hover */
+  }

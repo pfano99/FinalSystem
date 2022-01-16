@@ -1,0 +1,212 @@
+{% extends 'layout.html' %}
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            {% if current_user.user_type == 0 %}
+              <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+            {% else %}
+              <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            {% endif %}
+          </li>
+          {% if current_user.user_type == 0 %}
+            <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('Product.add_product') }} ">Add New Product</a>
+            </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href=" {{ url_for('Product.checkout') }} ">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('Restuarant.favorites') }}">Favorites</a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method='POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block header_links %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+crossorigin=""/>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css" rel="stylesheet">
+
+
+
+<link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.13/dist/leaflet.draw.css"/>
+
+{% endblock %}
+
+
+{% block header %}
+
+<div id="map" style="height: 500px;">
+
+</div>
+
+{% endblock %}
+
+{% block body %}
+
+<br>
+<div class="bg-light">
+  {% for farmer in farmers.items|batch(4) %}
+      <div class="row">
+        {% for col in farmer%}
+          <div class="col-md-3 farmers-list">
+
+            <div class="card border-0 transform-on-hover bg-light">
+              <a href=" {{ url_for('Farmer.farmer_profile', username=col.username) }} ">
+                <img src="{{ url_for('static', filename='profile_pictures/' + col.profile_picture ) }}" alt="{{ col.first_name }}" style="width:100%">
+              </a>
+              <h3> <a href=" {{ url_for('Farmer.farmer_profile', username=col.username) }} "> {{ col.first_name }} {{ col.last_name }} </a> 
+              </h3>
+              <h5> {{ col.address[0].province }} </h5>
+              {% if current_user.user_type == 1 %}
+                {% if current_user.exist_in_favorite(col.id) %}
+                  <a class="btn btn-outline-danger" href=" {{ url_for('Farmer.delete_from_favorite', farmer_id=col.id) }} ">Remove from favorite</a>
+                {% else %}
+                  <a class="btn btn-outline-success" href=" {{ url_for('Farmer.add_to_favorite', farmer_id=col.id) }} ">Add to favorite</a>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+  {% endfor %}
+</div>
+
+<!-- start pagination -->
+<br>
+
+<div>
+  <nav aria-label="...">
+    <ul class="pagination pagination-sm">
+      {% for page in farmers.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page %}
+          {% if farmers.page == page %}
+          <li class="page-item active" aria-current="page"> <span class="page-link">{{ page }} </span> </li>
+          {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('Main.home', page=page) }}">{{ page }}</a></li>
+          {% endif %}
+        {% else %}
+          ...
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+</div>
+<!-- end pagination -->
+
+<br>
+
+  
+
+{% endblock body %}
+
+<!-- Map scripts -->
+{% block scripts %}
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+<script >
+
+// Getting current user's latitude and longtitude 
+let user_loc = JSON.parse('{{user_address|safe}}')
+const other_farmers_location = JSON.parse('{{addresses|safe}}')  
+
+// centering the map around current user's lat and lng
+var mymap = L.map('map').setView([user_loc.lat, user_loc.lng], 11);
+
+
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoicGZhbm9zaWdhbWEiLCJhIjoiY2t3MDFqM245MHI1MDMwbnQ5ZGsxMjNyeSJ9.X6-0KvaKjbobgUiVia3cTQ'
+}).addTo(mymap);
+
+var circle = L.circle([user_loc.lat, user_loc.lng], {
+    color: 'green',
+    fillColor: '36, 128, 98',
+    fillOpacity: 0.5,
+    radius: 30000
+}).addTo(mymap);
+
+var marker = L.marker([user_loc.lat, user_loc.lng]).addTo(mymap);
+
+for (let i = 0; i < other_farmers_location.length; i++){
+  let user = [ other_farmers_location[i].lat, other_farmers_location[i].lng ];
+  L.marker(user).addTo(mymap);
+}
+
+var directions = new MapboxDirections({
+  accessToken: 'pk.eyJ1IjoicGZhbm9zaWdhbWEiLCJhIjoiY2t3MDFqM245MHI1MDMwbnQ5ZGsxMjNyeSJ9.X6-0KvaKjbobgUiVia3cTQ',
+  unit: 'metric',
+  profile: 'mapbox/cycling'
+});
+// add to your mapboxgl map
+mymap.addControl(directions);
+
+</script>
+
+
+<!-- <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+<script src="https://unpkg.com/leaflet-draw@0.4.13/dist/leaflet.draw.js"></script> -->
+
+<!-- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script> -->
+
+<!-- <script>
+L.mapquest.key = 'CrzGS4imoGN4NMYLE4X2QcKGxJrbCTNm';
+
+let user_loc = JSON.parse('{{user_address|safe}}')
+
+var baseLayer = L.mapquest.tileLayer('dark');
+
+// 'map' refers to a <div> element with the ID map
+map = L.mapquest.map('map', {
+  center: [user_loc.lat, user_loc.lng],
+  layers: baseLayer,
+  zoom: 12
+});
+map.addControl(L.mapquest.control());
+// L.control.layers({
+//   'Map': baseLayer
+// }).addTo(map);
+
+
+
+
+</script> -->
+{% endblock %}
+

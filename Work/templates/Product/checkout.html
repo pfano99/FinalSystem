@@ -1,0 +1,217 @@
+{% extends 'layout.html' %}
+
+
+{% block header_links %}
+
+<style>
+    .title {
+        margin-bottom: 5vh
+    }
+
+    .card {
+        margin: auto;
+        max-width: 1500px;
+        width: 100%;
+        box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 1rem;
+        border: transparent
+    }
+
+    @media(max-width:767px) {
+        .card {
+            margin: 3vh auto
+        }
+    }
+
+    .cart {
+        background-color: #fff;
+        padding: 4vh 5vh;
+        border-bottom-left-radius: 1rem;
+        border-top-left-radius: 1rem
+    }
+
+    @media(max-width:767px) {
+        .cart {
+            padding: 4vh;
+            border-bottom-left-radius: unset;
+            border-top-right-radius: 1rem
+        }
+    }
+
+    .summary {
+        background-color: #ddd;
+        border-top-right-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+        padding: 4vh;
+        color: rgb(65, 65, 65)
+    }
+
+    @media(max-width:767px) {
+        .summary {
+            border-top-right-radius: unset;
+            border-bottom-left-radius: 1rem
+        }
+    }
+
+    .summary .col-2 {
+        padding: 0
+    }
+
+    .summary .col-10 {
+        padding: 0
+    }
+
+    .row {
+        margin: 0
+    }
+
+    .title b {
+        font-size: 1.5rem
+    }
+
+    .main {
+        margin: 0;
+        padding: 2vh 0;
+        width: 100%
+    }
+
+    .col-2,
+    .col {
+        padding: 0 1vh
+    }
+
+    a {
+        padding: 0 1vh
+    }
+
+    .close {
+        margin-left: auto;
+        font-size: 0.7rem
+    }
+
+    img {
+        width: 3.5rem
+    }
+
+    .back-to-shop {
+        margin-top: 4.5rem
+    }
+
+    h5 {
+        margin-top: 4vh
+    }
+
+    hr {
+        margin-top: 1.25rem
+    }
+
+    select {
+        border: 1px solid rgba(0, 0, 0, 0.137);
+        padding: 1.5vh 1vh;
+        margin-bottom: 4vh;
+        outline: none;
+        width: 100%;
+        background-color: rgb(247, 247, 247)
+    }
+
+    #code {
+        background-image: linear-gradient(to left, rgba(255, 255, 255, 0.253), rgba(255, 255, 255, 0.185)), url("https://img.icons8.com/small/16/000000/long-arrow-right.png");
+        background-repeat: no-repeat;
+        background-position-x: 95%;
+        background-position-y: center
+    }
+</style>
+{% endblock %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+        <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('Restuarant.favorites') }}">Favorites</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+        </li>
+        
+    </ul>
+    <form class="d-flex"  action ="/home" method = 'POST'>
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    </div>
+</div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-10 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col">
+                        <h4><b>Shopping Cart</b></h4>
+                    </div>
+                    <div class="col align-self-center text-right text-muted">R{{ credit_amount }} CREDIT</div>
+                </div>
+            </div>
+            {% for ca in cart %}
+            <div class="row border-top border-bottom">
+                <div class="row main align-items-center">
+                    <div class="col">
+                        <div class="row text-muted"> {{ ca.product.category }}</div>
+                        <div class="row">{{ ca.product.product_name }}</div>
+                    </div>
+                    <div class="col">
+                        <div class="row text-muted"> Quantity </div>
+                        <div class="row">{{ ca.quantity }}</div>
+                    </div>  
+
+                    <div class="col">
+                        <div class='row text-muted' >Price</div>
+                        <div class='row' >R{{ ca.product.price * ca.quantity}}</div>
+                    </div>
+                    <div class="col">
+                        <a class='btn btn-outline-danger' href="{{ url_for('Farmer.delete_from_cart', product_id=ca.product.id, prev_page='cart') }}">Remove</a>
+                    </div>
+                    <div class="col">
+                        <a class='btn btn-outline-primary' href="{{ url_for('Product.update_cart_info', cart_id=ca.id) }}">Update</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-2 summary">
+            <div>
+                <h5><b>Summary</b></h5>
+            </div>
+            <!-- <hr> -->
+            <!-- <div class="row"> -->
+                <!-- <div class="col" style="padding-left:0;margin-bottom: 7px;">ITEMS {{ cart.count() }}</div> -->
+                <!-- <div class="col text-right">&euro; 132.00</div> -->
+            <!-- </div> -->
+            <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                <div class="col">TOTAL PRICE R{{ total }}</div>
+            </div> <a class="btn btn-outline-success" href='{{ url_for("Product.payment_method") }}'>CHECKOUT</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

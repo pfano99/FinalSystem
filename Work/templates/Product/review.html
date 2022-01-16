@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+{% block header_links %}
+
+<style>
+    body{
+        background-image: url('../../static/background_img/carrots.jpeg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+    }
+</style>
+
+{% endblock %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if current_user.user_type==0 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('Farmer.farmer_profile', username=current_user.username) }}">Profile</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('Restuarant.restuarant_profile', username=current_user.username) }}">Profile</a>
+                </li>
+            {% endif %}
+            {% if current_user == user and current_user.offer_services %}
+                <li class="nav-item">
+                <a class="nav-link" href=" {{ url_for('Farmer.farmer_dashboard', username=user.username) }} ">DashBoard</a>
+                </li>
+            {% endif %}
+            {% if current_user == user %}
+                <li class="nav-item">
+                    <a class="nav-link" href=" {{ url_for('Product.add_product') }} ">Add Product</a>
+                </li>
+            {% endif %}   
+            <li class="nav-item">
+                <a class="nav-link" href="#">Chats</a>
+              </li> 
+            <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+            </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+
+<div>
+    <form action="" method="POST" class="row g-3">
+        {{ form.hidden_tag() }}
+        
+        <div class="col-12">
+            {{ form.body.label(class="form-label") }}
+            {{ form.body(class="form-control") }}
+
+            {% if form.body.errors %}
+                {% for error in form.body.errors %}
+                    <span> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-6">
+        {{ form.submit(class="btn btn-outline-primary") }}
+        </div>
+
+    </form>
+</div>
+<br>
+{% endblock body %}
+
+
+
+

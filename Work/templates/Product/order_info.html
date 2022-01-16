@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method='POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block header_links %}
+<style>
+
+pre {
+  display: block;
+  font-size: 1em;
+  white-space: pre;
+  margin: 0.5em 0;
+}
+
+.prod-infor{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+
+<hr>
+<div>
+      <a class="btn btn-outline-dark" href="{{ url_for('Report.generate_report_pdf_rest', order_id=order_id) }}">
+        Download Report(pdf)
+      </a>
+      <a class="btn btn-outline-dark" href="{{ url_for('Report.generate_report_csv_rest', order_id=order_id) }}">
+        Download Report(csv)
+      </a>
+</div>
+<hr>
+
+<h5>Products ordered</h5>
+
+<div>
+    {% for order in orders.order_details %}
+        <div class="prod-infor row">
+            <div class="col-md-6">
+                <h5>Product information</h5>
+                <pre>Date ordered                           {{ order.Orders.date_ordered.strftime("%b-%d-%Y") }} </pre>
+                <pre>Product                                {{ order.product.product_name }} </pre>
+                <pre>Quantity                               {{ order.quantity }} </pre>
+                <pre>Deliver by date                        {{ order.deliver_by_date.strftime("%b-%d-%Y") }}</pre>
+                {% if order.status == 'Cancelled' %}
+                  <pre style="color: red;">Status                                 {{ order.status }} </pre>
+                {% endif %}
+                {% if order.status == 'Delivered' %}
+                  <pre style="color: green;">Status                                 {{ order.status }} </pre>
+                {% endif %}
+                {% if order.status == 'Pending' or order.status == 'Received' %}
+                  <pre style="color: blue;">Status                                 {{ order.status }} </pre>
+                {% endif %}
+                <pre>Cost                                   R{{ order.price }} </pre>   
+            </div>
+            <div class="col-md-6">
+                <h5>Farmer's information</h5>
+                <pre>Name                                   {{ order.product.farmer.first_name|upper }} {{ order.product.farmer.last_name|upper }} </pre>
+                <pre>Email                                  {{ order.product.farmer.email}} </pre>
+                <pre>Telephone                              {{ order.product.farmer.telephone }} </pre>
+                <pre>Province                               {{ order.product.farmer.address.province }}</pre>
+                <pre>Suburb                                 {{ order.product.farmer.address.suburb }} </pre>
+                {% if order.status  == 'Cancelled' or order.status == 'Delivered' %}
+                    <a class="btn btn-outline-danger btn-sm disabled" href="#">Cancel product</a>
+                {% else %}
+                    <a class="btn btn-outline-danger btn-sm" href="{{ url_for('Product.confirm_item_cancel', item_id=order.id) }}">Cancel product</a>
+                {% endif %}
+            </div>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock body %}

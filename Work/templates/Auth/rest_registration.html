@@ -1,0 +1,140 @@
+{% extends 'layout.html' %}
+
+{% block header_links %}
+
+<style>
+    body{
+        background-image: url('../../static/background_img/carrots.jpeg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: 100% 100%;
+    }
+</style>
+
+{% endblock %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for( 'Main.index' ) }}">NextFarm</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">  
+            
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Log in
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_login') }}">Farmer</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_login') }}">Resturant</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Sign Up
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="{{ url_for('Auth.farmer_register') }}">Farmer</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('Auth.restuarant_registration') }}">Resturant</a></li>
+                </ul>
+            </li>
+        </ul>
+        </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+
+{% block body %}
+
+
+<div class="mb-3">
+    <form action="" method="POST" >
+
+        {{ form.hidden_tag() }}
+
+        <div class="col-12">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+
+            {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                    <span style="color:red;"> {{ error }} </span>  <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-12">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <span style="color:red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-12">
+            {{ form.telephone.label(class="form-label") }}
+            {{ form.telephone(class="form-control") }}
+
+            {% if form.telephone.errors %}
+                {% for error in form.telephone.errors %}
+                    <span style="color:red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-12">
+            {{ form.website.label(class="form-label") }}
+            {{ form.website(class="form-control") }}
+
+            {% if form.website.errors %}
+                {% for error in form.website.errors %}                   
+                <span style="color:red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-12">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}                   
+                <span style="color:red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-12">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control") }}
+
+            {% if form.confirm_password.errors %}
+                {% for error in form.confirm_password.errors %}
+                    <span style="color:red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <br>
+        <div class="col-12">
+            {{ form.submit(class="btn btn-outline-primary") }}
+        </div>
+        <div>
+            <a href="{{ url_for('Auth.restuarant_login' ) }}">Already have account? log in</a>
+        </div>
+    </form>
+</div>
+    
+<br>
+{% endblock body %}
+

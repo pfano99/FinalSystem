@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Map</title>
+
+    <style type="text/css">
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height:100%"></div>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV2bOUGX28d0lnalwpl2MVmPHnM8w2jrc&callback=initMap&libraries=&v=weekly"
+      async
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+    <script>
+      function initMap() {
+        
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        var chicago = new google.maps.LatLng(-30.5595, 22.9375);
+        var mapOptions = {
+          zoom:5,
+          center: chicago
+        }
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        directionsRenderer.setMap(map);
+        directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+      // }
+
+      function calcRoute() {
+        var start = {lat:-33.8275,lng:18.6527};
+        var end = {lat:-25.4834,lng:28.1068};
+        var request = {
+          origin:start,
+          destination:end,
+          travelMode: 'DRIVING'
+        };
+        directionsService.route(request, function(response, status) {
+          if (status == 'OK') {
+            directionsRenderer.setDirections(response);
+          }else{
+            alert("could not find the directions")
+          }
+        });
+      }
+      calcRoute();
+      
+    }
+    </script>
+
+  </body>
+</html>

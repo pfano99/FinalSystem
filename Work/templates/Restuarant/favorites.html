@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('Restuarant.favorites') }}">Favorites</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+        </ul>
+        <form class="d-flex"  action ="/home" method='POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block body %}
+
+<br>
+<div class="bg-light">
+
+{% if farmers.count() < 4 %}
+  <div class="row">
+    {% for farmer in farmers %}
+      <div class="col-md-3 farmers-list">
+        <div class="card border-0 transform-on-hover bg-light">
+          <a href=" {{ url_for('Farmer.farmer_profile', username=farmer.farmer.username) }} ">
+            <img src="{{ url_for('static', filename='profile_pictures/' + farmer.farmer.profile_picture ) }}" alt="{{ farmer.farmer.first_name }}" style="width:100%">
+          </a>
+          <h3> <a href=" {{ url_for('Farmer.farmer_profile', username=farmer.farmer.username) }} "> {{ farmer.farmer.first_name }} {{ farmer.farmer.last_name }} </a> 
+          </h3>
+          <h5> {{ farmer.farmer.address[0].province }} </h5>
+          {% if current_user.user_type == 1 %}
+            {% if current_user.exist_in_favorite(farmer.farmer.id) %}
+              <a class="btn btn-outline-danger" href=" {{ url_for('Farmer.delete_from_favorite', farmer_id=farmer.farmer.id) }} ">Remove from favorite</a>
+            {% else %}
+              <a class="btn btn-outline-success" href=" {{ url_for('Farmer.add_to_favorite', farmer_id=farmer.farmer.id) }} ">Add to favorite</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+
+  {% for farmer in farmers.items|batch(4) %}
+      <div class="row">
+        {% for col in farmer %}
+          <div class="col-md-3 farmers-list">
+            aaa
+            <div class="card border-0 transform-on-hover bg-light">
+              <a href=" {{ url_for('Farmer.farmer_profile', username=col.farmer.username) }} ">
+                <img src="{{ url_for('static', filename='profile_pictures/' + col.farmer.profile_picture ) }}" alt="{{ col.farmer.first_name }}" style="width:100%">
+              </a>
+              <h3> <a href=" {{ url_for('Farmer.farmer_profile', username=col.farmer.username) }} "> {{ col.farmer.first_name }} {{ col.farmer.last_name }} </a> 
+              </h3>
+              <h5> {{ col.farmer.address[0].province }} </h5>
+              {% if current_user.user_type == 1 %}
+                {% if current_user.exist_in_favorite(col.farmer.id) %}
+                  <a class="btn btn-outline-danger" href=" {{ url_for('Farmer.delete_from_favorite', farmer_id=col.farmer.id) }} ">Remove from favorite</a>
+                {% else %}
+                  <a class="btn btn-outline-success" href=" {{ url_for('Farmer.add_to_favorite', farmer_id=col.farmer.id) }} ">Add to favorite</a>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+  {% endfor %}
+             
+  {% endif %}
+<!-- </div> -->
+
+
+{% endblock body %}

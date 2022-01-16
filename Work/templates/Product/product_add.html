@@ -1,0 +1,189 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+
+
+{% block navigation %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if current_user == worker %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href=" {{ url_for('Worker.account') }} ">DashBoard</a>
+                </li>
+           {% endif %}
+           {% if current_user.user_type==0 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('Farmer.farmer_profile', username=current_user.username) }}">Profile</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('Restuarant.restuarant_profile', username=current_user.username) }}">Profile</a>
+                </li>
+            {% endif %}
+            {% if current_user == user and current_user.offer_services %}
+                <li class="nav-item">
+                <a class="nav-link" href=" {{ url_for('Farmer.farmer_dashboard', username=user.username) }} ">DashBoard</a>
+                </li>
+            {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Product.add_product') }} ">Add Product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+
+{% block body %}
+
+<div>
+    <form action="" method="POST" enctype="multipart/form-data" class="row g-1">
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-6">
+            {{ form.category.label(class="form-label") }}
+            {{ form.category(class="form-select", id="category", placeholder="eg. Carrots, apples, cows, etc...") }}
+
+            {% if form.category.errors %}
+                {% for error in form.category.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ form.product_name.label(class="form-label") }}
+            {{ form.product_name(class="form-select",  id="product_name") }}
+
+            {% if form.product_name.errors %}
+                {% for error in form.product_name.errors %}
+                    <span style="color:red;"> {{ error }} </span><br> 
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-12" id="others"  style="display: none;">
+            {{ form.other.label(class="form-label") }}
+            {{ form.other(class="form-control", placeholder="others") }} 
+
+            {% if form.other.errors %}
+                {% for error in form.other.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control", placeholder="R") }} 
+
+            {% if form.price.errors %}
+                {% for error in form.price.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ form.stock_count.label(class="form-label") }}
+            {{ form.stock_count(class="form-control", placeholder="eg. 10") }} 
+
+            {% if form.stock_count.errors %}
+                {% for error in form.stock_count.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {{ form.delivers.label(class="form-label") }}
+            {{ form.delivers(class="form-select", placeholder="eg. 10") }} 
+
+            {% if form.delivers.errors %}
+                {% for error in form.delivers.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ form.product_image.label(class="form-label") }}
+            {{ form.product_image(class="form-control form-select") }}
+
+            {% if form.product_image.errors %}
+                {% for error in form.product_image.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-12">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control") }}
+
+            {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {{ form.submit(class="btn btn-outline-success") }}
+        
+    </form>
+</div>
+<br>
+
+{% endblock body %}
+{% block scripts %}
+
+<script>
+    let select_category = document.getElementById("category");
+    let select_product_name = document.getElementById("product_name");
+
+    select_category.onchange = function(){
+        category = select_category.value;
+        fetch('/product/category/' + category).then(function(response){
+            response.json().then(function(data){
+                let optionHTML = ""
+                for(let d of data.resp){
+                    optionHTML += "<option value='" + d.name + "'>" + d.name + "</option>"
+                }
+                select_product_name.innerHTML = optionHTML;
+            });
+        });
+    }
+
+    select_product_name.onchange = function(){
+        
+        if (select_product_name.value == 'others'){
+            document.getElementById("others").style.display = "block";
+        }
+        else{
+            document.getElementById("others").style.display = "none";
+        }
+        
+    }
+
+</script>
+
+{% endblock %}

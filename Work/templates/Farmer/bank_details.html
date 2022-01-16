@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+
+<div>
+    <form action="" method="POST" enctype="multipart/form-data" class="row g-1">
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-12">
+            {{ form.account_no.label(class="form-label") }}
+            {{ form.account_no(class="form-control", placeholder="your account number") }}
+
+            {% if form.account_no.errors %}
+                {% for error in form.account_no.errors %}
+                    <span style="color:red;"> {{ error }} </span><br> 
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {{ form.bank_name.label(class="form-label") }}
+            {{ form.bank_name(class="form-select", placeholder="bank name") }} 
+
+            {% if form.bank_name.errors %}
+                {% for error in form.bank_name.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ form.branch_code.label(class="form-label") }}
+            {{ form.branch_code(class="form-control", placeholder="branch code") }} 
+
+            {% if form.branch_code.errors %}
+                {% for error in form.branch_code.errors %}
+                    <span style="color:red;"> {{ error }} </span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {{ form.submit(class="btn btn-outline-success") }}
+        
+    </form>
+</div>
+
+
+{% endblock body %}
+
+
+
+

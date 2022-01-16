@@ -1,0 +1,160 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+              {% if current_user.user_type == 0 %}
+                <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+            {% else %}
+                <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            {% endif %}
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+<div>
+    <br>
+    <hr>
+    <br>
+</div>
+
+<div class="col-md-4" >
+    <button class="btn btn-outline-success" onclick="getLocation();" id="getloc">
+        Get Location
+    </button>
+</div>
+
+
+<div>
+    <form action="" method="POST" class="row g-3">
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-6">
+            {{ form.town.label(class="form-label") }}
+            {{ form.town(class="form-control")  }}
+
+            {% if form.town.errors %}
+                    {% for error in form.town.errors %}
+                        <span style="color: red;"> {{ error }} </span> <br>
+                    {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            {{ form.province.label(class="form-label") }}
+            {{ form.province(class="form-control form-select")  }}
+
+            {% if form.province.errors %}
+                    {% for error in form.province.errors %}
+                        <span style="color: red;"> {{ error }} </span> <br>
+                    {% endfor %}
+            {% endif %}
+        </div>
+        {{ form.lat }}
+        {{ form.lng }}
+        <div class="col-md-4">
+            {{ form.building_name.label(class="form-label") }}
+            {{ form.building_name(class="form-control") }} 
+
+            {% if form.building_name.errors %}
+                {% for error in form.building_name.errors %}
+                    <span style="color: red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {{ form.suburb.label(class="form-label") }}
+            {{ form.suburb(class="form-control") }} 
+
+            {% if form.suburb.errors %}
+                {% for error in form.suburb.errors %}
+                    <span style="color: red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-control") }} 
+
+            {% if form.city.errors %}
+                {% for error in form.city.errors %}
+                    <span style="color: red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-12">
+            {{ form.streat_address.label(class="form-label") }}
+            {{ form.streat_address(class="form-control") }} 
+
+            {% if form.streat_address.errors %}
+                {% for error in form.streat_address.errors %}
+                    <span style="color: red;"> {{ error }} </span> <br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-12">
+            {{ form.submit(class="btn btn-primary") }} 
+        </div>
+        
+    </form>
+
+</div>
+
+<br>
+<hr>
+<br>
+
+    <script>
+        function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else { 
+            alert("Geolocation is not supported by this browser.");
+        }
+        }
+        
+        function showPosition(position) {
+            // x.innerHTML = "Latitude: " + position.coords.latitude + 
+            // "<br>Longitude: " + position.coords.longitude;
+            // alert("we here")
+            document.getElementById("hidden_lat").value = position.coords.latitude;
+            document.getElementById("hidden_lng").value = position.coords.longitude;
+
+        }
+    </script>
+
+{% endblock body %}
+
+
+
+

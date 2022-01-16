@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">HireMe</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if current_user == worker %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href=" {{ url_for('Worker.account') }} ">DashBoard</a>
+                </li>
+           {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Service.register_services') }} ">Register Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+
+{% block body %}
+
+
+<br>
+<hr>
+<br>
+    
+    {% if services %}
+        {% for service in services %}
+            <div class="card">
+                <img src="{{ url_for('static', filename = 'profile_pictures/' + service.worker.profile_picture) }}" alt="Denim Jeans" style="width:100%">
+                <h1>{{ service.worker.first_name }}  {{ service.worker.last_name }}</h1>
+                <p class="price">R {{ service.price }}</p>
+                <p>{{ service.category }}</p>
+                <p><button>Veiw Profile</button></p>
+            </div> 
+        {% endfor %}
+    {% else %}
+            <h3> Nothing was found, try different term </h3>
+    {% endfor %}
+    
+
+
+{% endblock body %}
+
+
+
+

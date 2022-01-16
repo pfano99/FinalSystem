@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+
+
+{% endblock navigation %}
+
+{% block body %}
+
+
+
+<div> 
+    <form action="" method='POST'>
+
+        {{ form.hidden_tag() }}
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
+
+        {% if form.email.errors %}
+            {% for error in form.email.errors %}
+                <span> {{ error }} </span>
+            {% endfor %}
+        {% endif %}
+        
+        {{ form.submit(class="btn btn-outline-primary") }} 
+    </form>
+</div>
+
+
+{% endblock body %}
+
+
+
+

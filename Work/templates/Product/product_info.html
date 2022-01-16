@@ -1,0 +1,274 @@
+{% extends 'layout.html' %}
+
+{% block header_links %}
+
+    <style>
+
+        .seller-header{
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border-radius:2%;
+            border-style:none;
+            padding-left: 18px;
+            padding-top: 10px;
+            height: 50px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+
+        .prod-images{
+            margin: 10px auto;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left:50px;
+        }
+        .prod-infor{
+            margin-bottom: 10px;
+            margin-top: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+    </style>
+
+
+{% endblock %}
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        {% if current_user.is_authenticated %} 
+    <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+        {% else %}
+            <a class="navbar-brand" href="{{ url_for( 'Main.index' ) }}">NextFarm</a>
+        {% endif %}
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if current_user.is_authenticated %}
+        <li class="nav-item">
+            {% if current_user.user_type == 0 %}
+                    <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+                {% else %}
+                    <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            {% endif %}
+        </li>
+    
+        <li class="nav-item">
+            <a class="nav-link" href="#">Chats</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+        </li>
+        {% endif %}
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+<div class="seller-header">
+    <p>SELLER
+    <a href="{{ url_for('Farmer.farmer_profile', username=product.farmer.username) }}"> 
+        {{ product.farmer.first_name|upper }} {{ product.farmer.last_name|upper }}
+    </a>
+    </p>
+</div>
+
+<!-- Product Offered By Farmer Section-->
+
+<!-- Product images -->
+{% if images %}
+    <div class="row prod-images">
+        {% for image in images %}
+
+        <div class="profile mr-3 ">
+            <img class="mySlides img-fluid" src="{{ url_for('static', filename='product_images/' + image.name) }}" alt="No image" width="1000" height="500" class="rounded mb-2 img-thumbnail">
+        </div>
+
+        {% endfor %}
+    </div>
+{% else %}
+<div class="profile mr-3 ">
+    <img class="mySlides img-fluid" src="{{ url_for('static', filename='product_images/noimage.png') }}" alt="..." width="1000" height="500" class="rounded mb-2 img-thumbnail">
+</div>
+{% endif %}
+<br>
+<div>
+    <button class="btn btn-outline-success" onclick="plusDivs(-1)">prev</button>
+    <button class="btn btn-outline-success" onclick="plusDivs(+1)">next</button>
+</div>
+
+<!-- End of producty images -->
+<div class="prod-infor">
+    <h3> PRODUCT OFFERED </h3>
+    <pre>Product:                                                {{ product.product_name  }}  </pre>
+    <pre>Price :                                                 R{{ product.price }} </pre>
+    <pre>Stock Available:                                        {{ product.stock_count }} </pre> 
+    <pre>Category:                                               {{ product.category }} </pre>
+    {% if product.offer_delivery %}
+        <pre>Offer delivery:                                         Yes </pre> 
+    {% else %}
+        <pre>Offer delivery:                                         No </pre> 
+    {% endif %}
+    <pre>Description:                                            {{ product.description }} </pre> 
+</div>
+<div>
+    {% if current_user == product.farmer %}
+        <a href="{{ url_for('Product.delete_product', product_id = product.id) }}">
+            <button class="btn btn-outline-danger">
+                Delete Product
+            </button>
+        </a>
+    {% else %}
+        {% if current_user.user_type == 1 %}
+            {% if current_user.exist_in_cart(product.id) %}
+                <a class="btn btn-outline-danger" href="{{ url_for('Farmer.delete_from_cart', product_id=product.id, prev_page='prod') }} ">Remove from cart</a>
+            {% else %}
+                <a class="btn btn-outline-success" href="{{ url_for('Farmer.add_to_cart', product_id=product.id, prev_page='prod') }} ">Add to cart</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>
+<!-- End of offerded product section -->
+
+{% if current_user == product.farmer %}
+<!-- Update product information form Product -->
+    <div>
+    <h2> Update Product Information </h2>    
+    <form action="" method="POST" enctype="multipart/form-data" class="row g-1">
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-12">
+            {{ form.product_name.label(class="form-label") }}
+            {{ form.product_name(class="form-control") }}
+
+            {% if form.product_name.errors %}
+                {% for error in form.product_name.errors %}
+                    <span> {{ error }} </span> 
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control") }} 
+
+            {% if form.price.errors %}
+                {% for error in form.price.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            {{ form.stock_count.label(class="form-label") }}
+            {{ form.stock_count(class="form-control") }} 
+
+            {% if form.stock_count.errors %}
+                {% for error in form.stock_count.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="col-md-4">
+            {{ form.delivers.label(class="form-label") }}
+            {{ form.delivers(class="form-control  form-select") }}
+
+            {% if form.delivers.errors %}
+                {% for error in form.delivers.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {{ form.category.label(class="form-label") }}
+            {{ form.category(class="form-control  form-select") }}
+
+            {% if form.category.errors %}
+                {% for error in form.category.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {{ form.product_image.label(class="form-label") }}
+            {{ form.product_image(class="form-control  form-select") }}
+
+            {% if form.product_image.errors %}
+                {% for error in form.product_image.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-12">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control") }}
+
+            {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                    <span> {{ error }} </span>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="col-md-12">
+            {{ form.submit(class="btn btn-outline-success") }}
+        </div>
+        
+    </form>
+    <br>
+    </div>
+
+{% else %}
+
+    <div>
+        <h2>Other Similar products</h2>
+    </div>
+
+{% endif %}
+<!-- End of product update form -->
+<br>
+<br><br>
+
+{% endblock body %}
+
+{% block scripts %}
+<script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+
+    function plusDivs(n) {
+    showDivs(slideIndex += n);
+    }
+
+    function showDivs(n) {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    if (n > x.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = x.length} ;
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    x[slideIndex-1].style.display = "block";
+    }
+</script>
+
+{% endblock %}
+
+
+
+
+

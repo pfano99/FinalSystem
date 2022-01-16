@@ -1,0 +1,303 @@
+{% extends 'layout.html' %}
+
+
+{% block title %}
+    {{ title }}
+{% endblock title %}
+
+{% block header_links %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reviews.css') }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <script src="https://kit.fontawesome.com/ab2155e76b.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+      pre {
+        display: block;
+        font-family: monospace;
+        font-size: 16px;
+        white-space: pre;
+        margin: 1em 0;
+      }
+  </style>
+
+  
+{% endblock %}
+
+{% block navigation %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for( 'Main.home' ) }}">NextFarm</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if current_user.user_type == 0 %}
+            <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('Farmer.farmer_profile', username = current_user.username) }} ">Profile</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href=" {{ url_for('Restuarant.restuarant_profile', username = current_user.username) }} ">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href=" {{ url_for('Product.checkout') }} ">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Restuarant.favorites') }}">Favorites</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Restuarant.restuarant_orders') }}">DashBoard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('Chat.chats_history', username=current_user.username) }}">Chats</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('Auth.logout') }} ">Logout</a>
+          </li>
+        </ul>
+        <form class="d-flex"  action ="/home" method = 'POST'>
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+</nav>
+
+{% endblock navigation %}
+
+{% block body %}
+
+<hr>
+<div class="row">
+  <div class="col-md-6">
+    <h2> Personal Information </h2>
+    <pre> Restuarant Name                 {{ restuarant.name }} </pre> 
+    <pre> Email                           {{ restuarant.email }} </pre> 
+    <pre> telephone number                {{ restuarant.telephone }} </pre> 
+    <pre> Website                         {{ restuarant.website }} </pre> 
+    <pre> member since                    {{ restuarant.date_joined.strftime("%b-%d-%Y") }} </pre> 
+  </div>
+  <div class="col-md-6">
+    <h2> Address Information</h2>
+    {% if restuarant.address %}
+    <pre>Province                        {{ restuarant.address[0].province }} </pre>
+    <pre>Town                            {{ restuarant.address[0].town }} </pre>
+    <pre>Suburb                          {{ restuarant.address[0].suburb }} </pre>
+    <pre>City                            {{ restuarant.address[0].city }} </pre>
+    <pre>Street                          {{ restuarant.address[0].streat_address }} </pre>
+    <pre>Building                        {{ restuarant.address[0].building_name }} </pre>
+    {% else %}
+        {% if restuarant == current_user %}
+          <a href="{{ url_for('Address.address_registration') }}"> 
+            <button class="btn btn-outline-primary"> Add address </button>
+          </a>
+        {% else %}
+          <p> Oops No address information found</p>
+        {% endif %}
+    {% endif %}
+  </div>
+</div>
+<hr>
+<div>
+  <a href="{{ url_for('Restuarant.confirm_delete_restuarant_profile') }}">
+    <button class="btn btn-outline-danger"> Delete Profile </button>
+  </a>
+  <a href="{{ url_for('Address.address_registration') }}">
+    <button class="btn btn-outline-primary"> Update Address </button>
+  </a>
+  <a href="{{ url_for('Restuarant.favorites') }}">
+    <button class="btn btn-outline-warning"> My Favorites  <span class="badge alert-success">{{ restuarant.favorite|count }} </span></button>
+  </a>
+  <a href="{{ url_for('Product.checkout') }}">
+    <button class="btn btn-outline-success"> My Cart  <span class="badge alert-success">{{ cart.count() }} </span></button>
+  </a>
+  <a href="{{ url_for('Restuarant.restuarant_orders') }}">
+    <button class="btn btn-outline-success"> DashBoard </button>
+  </a>
+  <a href="#reviews-lst">
+    <button class="btn btn-outline-info"> My Reviews </button>
+  </a>
+</div>
+<hr>
+<br>
+<!-- update user profile information forms Section-->
+{% if current_user == restuarant %}
+
+    <div class="bg-light">
+        <h3> Update Profile information </h3>
+        <fieldset  class="border p-2 form-group">
+        <form action="" method="POST" enctype="multipart/form-data" class="row g-1">
+            {{ form.hidden_tag() }}
+
+            <div class="col-12">
+                {{ form.profile_picture.label(class="form-label") }}
+                {{ form.profile_picture(class="form-control") }}
+
+                {% if form.profile_picture.errors %}
+                    {% for error in form.profile_picture.errors %}
+                        <span style="color:red;"> {{ error }} </span> <br>
+                    {% endfor %}
+                {% endif %}
+                
+            </div>
+
+            <div class="col-md-6">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            
+                {% if form.name.errors %}
+                    {% for error in form.name.errors %}
+                        <span style="color:red;"> {{ error }} </span> <br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        <span style="color:red;"> {{ error }} </span> <br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                {{ form.telephone.label(class="form-label") }}
+                {{ form.telephone(class="form-control") }}
+
+                {% if form.telephone.errors %}
+                    {% for error in form.telephone.errors %}
+                        <span style="color:red;"> {{ error }} </span> <br>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="col-6">
+                {{ form.website.label(class="form-label") }}
+                {{ form.website(class="form-control") }} 
+
+                {% if form.website.errors %}
+                    {% for error in form.website.errors %}
+                        <span style="color:red;"> {{ error }} </span> <br>
+                    {% endfor %}
+                {% endif %}
+            </div>           
+
+            <div class="col-12">
+                {{ form.submit(class="btn btn-outline-success") }}
+            </div>
+        </form>
+            
+        </fieldset>
+    </div>
+
+    <div>
+        <br>
+    </div>
+{% endif %}
+
+
+<!-- Reviews section -->
+<br>
+<h2> Reviews </h2>
+<hr/>
+<div class="row" id="reviews-lst">
+  <div class="col-md-12">
+      <div class="blog-comment">
+        <ul class="comments">
+          {% if reviews %}
+              
+              {% macro display_comments(user_reviews, level=0) %}
+        
+              {% if level==0 %}
+                {% if user_reviews.reviewer_comp %}
+                  <li class="clearfix">
+                      <img src="{{ url_for('static', filename='profile_pictures/' + user_reviews.reviewer_comp.profile_picture) }}" class="avatar" alt="">
+                      <div class="post-comments">
+                          <p class="meta"> {{ user_reviews.timestamp.strftime("%b-%d-%Y") }} <a href="#"> {{ user_reviews.reviewer_.first_name }} </a> says : <i class="pull-right"><a href="#"><small>Reply</small></a></i></p>
+                          <p>
+                              {{  user_reviews.body }}
+                          </p>
+                      </div>
+                  </li>
+                {% else %}
+                  <li class="clearfix">
+                      <img src="{{ url_for('static', filename='profile_pictures/' + user_reviews.reviewer_.profile_picture) }}" class="avatar" alt="">
+                      <div class="post-comments">
+                          <p class="meta"> {{ user_reviews.timestamp.strftime("%b-%d-%Y") }} <a href="#"> {{ user_reviews.reviewer_comp.name }} </a> says : <i class="pull-right"><a href="#"><small>Reply</small></a></i></p>
+                          <p>
+                              {{  user_reviews.body }}
+                          </p>
+                      </div>
+                  </li>
+              
+                {% endif %}
+              {% else %}
+              
+                  {% if user_reviews.reviewer_comp %}
+                    <!-- Response written by farmers -->
+                    <ul class="comments">
+                        <li class="clearfix">
+                            <img src="{{ url_for('static', filename='profile_pictures/' + user_reviews.reviewer_comp.profile_picture) }}" class="avatar" alt="">
+                            <div class="post-comments">
+                                <p class="meta"> {{ user_reviews.timestamp.strftime("%b-%d-%Y") }} <a href="#">{{ user_reviews.reviewer_.first_name }}</a> says : <i class="pull-right"><a href="#"><small>Reply</small></a></i></p>
+                                <p>
+                                    {{  user_reviews.body }}
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul class="comments">
+                        <li class="clearfix">
+                            <img src="{{ url_for('static', filename='profile_pictures/' + user_reviews.reviewer_.profile_picture) }}" class="avatar" alt="">
+                            <div class="post-comments">
+                                <p class="meta"> {{ user_reviews.timestamp.strftime("%b-%d-%Y") }} <a href="#">{{ user_reviews.reviewer_comp.name }}</a> says : <i class="pull-right"><a href="#"><small>Reply</small></a></i></p>
+                                <p>
+                                    {{  user_reviews.body }}
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                {% endif %}
+
+              {% endif %}
+
+
+              {% for reply in user_reviews.replies %}
+                  {{ display_comments( reply ,level+1) }}
+                  
+              {% endfor %}
+        
+              {% endmacro %}
+        
+              {% for review in reviews %}
+                  {{ display_comments(review) }}
+              {% endfor %}
+        
+          {% else %}
+              <p> Oops This is empty </p>
+          {% endif %}
+
+        </ul>
+      </div>
+  </div>
+  <div>
+      <a href="{{ url_for('Review.add_review', username=restuarant.username, user_type=restuarant.user_type, parent_id=0 )  }}">
+        <button class="btn btn-outline-success"> Write a review </button>
+      </a>
+  </div>
+
+</div>
+<br>
+<!-- End of reviews section -->
+{% endblock body %}
+
+
+
+

@@ -1,0 +1,96 @@
+
+body{
+	background: #f4f4f4;
+	color:#000;
+	font-family: 'Gill Sans', 'Gill Sans MT', 'Calibri', 'Trebuchet MS', sans-serif;
+}
+
+a {
+	text-decoration: none;
+	color: rgb(27, 133, 27);
+}
+
+a:hover{
+	color: lawngreen;
+}
+
+.clr{
+	clear: both;
+}
+
+.nav-container{
+	text-align:  center;
+}
+
+
+/*Footer section*/
+.serv-info{
+	background-position: center center;
+	min-height: 200px;
+	margin-top: 5px;
+	border-top: 2px #000000 solid;
+	padding: 20px;
+	text-align: center;
+	color: #000000;
+}
+
+
+/* User Profile Section */
+
+.profile-opt-nav{
+	background-color: #a61d44;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+}
+
+
+
+.profile-opt-nav ul{
+	list-style: none;
+	/* list- */
+}
+
+.profile-opt-nav li{
+	display:inline-block;
+
+}
+
+.personal-info{
+	/* background-color: #3da329b6; */
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+/* User Profile Section */
+
+.pro-block1{
+	background-color:#a61d44 ;
+	border-right:1px #000000 solid ;
+}
+
+.pro-block2{
+	background-color:#2a5e8f ;
+	color: #ffffff;
+	padding:5px;
+	text-transform: uppercase;
+	text-align: center;
+	border-right:1px #000000 solid ;
+	border-radius: 5px;
+}
+
+.pro-block3{
+	background-color:#2a8f2a ;
+	color: #ffffff;
+	padding:5px;
+	text-transform: uppercase;
+	text-align: center;
+	
+}
+
+/* home page farmers-list */
+.farmers-list{
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
